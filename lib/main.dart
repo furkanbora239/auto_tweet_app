@@ -1,18 +1,41 @@
+import 'package:auto_tweet/components/send_tweet.dart';
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
-final controller = WebViewController()
-  ..setJavaScriptMode(JavaScriptMode.unrestricted);
 void main() {
-  runApp(const MyApp());
+  runApp(const MaterialApp(
+    home: HomeScreen(),
+  ));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    controller.loadRequest(Uri.parse('https://x.com/'));
-    return SafeArea(child: WebViewWidget(controller: controller));
+    return ColoredBox(
+      color: Colors.black,
+      child: Center(
+        child: FilledButton(
+            style: const ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll(Colors.indigo)),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  Future.delayed(Duration(seconds: 20), () {
+                    Navigator.pop(context);
+                  });
+                  return SendTweet(
+                      url: Uri.parse(
+                          '''https://twitter.com/compose/tweet?&text=Merhaba %23dünya bununla beraber tweet ortasında hashtag meselesini çözmüş oldum.'''));
+                },
+              );
+            },
+            child: const Text(
+              'send tweet',
+              style: TextStyle(color: Colors.brown),
+            )),
+      ),
+    );
   }
 }
