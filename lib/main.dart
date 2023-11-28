@@ -1,7 +1,9 @@
 import 'package:auto_tweet/components/send_tweet.dart';
+import 'package:auto_tweet/gdocs.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  GSheetsApi().init();
   runApp(const MaterialApp(
     home: HomeScreen(),
   ));
