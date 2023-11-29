@@ -45,6 +45,7 @@ class T24 {
           html.querySelectorAll('div._3mmXU > div._1NMxy > div > p').toList();
       for (var element in contentData) {
         content += element.text;
+        content += '\n';
       }
     } else if (croppedLink.startsWith('haber')) {
       t24Category = 'haber';
