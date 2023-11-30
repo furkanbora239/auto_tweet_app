@@ -61,11 +61,11 @@ class GSheetsApi {
     }
   }
 
-  Future<List> getLestTenNews() async {
+  Future<List> getLestTenNewsT24() async {
     final List lestTenList = [];
     final lastSave = await t24SonDakikaWorkSheet.values.lastRow();
     final lastSaveIndex = await t24SonDakikaWorkSheet.values
-        .rowIndexOf(lastSave!.last, inColumn: lastSave.length);
+        .rowIndexOf(lastSave![3], inColumn: 4);
     for (int i = 10; i >= lestTenList.length;) {
       try {
         lestTenList.add(await t24SonDakikaWorkSheet.values

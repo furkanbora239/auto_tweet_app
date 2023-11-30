@@ -47,25 +47,28 @@ class HomeScreen extends StatelessWidget {
 
 void saveNewNews() async {
   var sonDakika = await T24().sonDakika();
-  var lastTenNews = await GSheetsApi().getLestTenNews();
+  var lastTenNews = await GSheetsApi().getLestTenNewsT24();
+  comparison:
   for (int i = 0; i < lastTenNews.length; i++) {
     for (int s = 0; s < sonDakika.length; s++) {
       if (lastTenNews[i][2] == sonDakika[s]['title']) {
         sonDakika.removeRange(s, sonDakika.length);
-        break;
+        break comparison;
       }
     }
   }
   List<List<dynamic>> saveSonDakika = [];
-  for (var element in sonDakika) {
-    saveSonDakika.add([
-      '',
-      element["time"].toString(),
-      element["title"].toString(),
-      element["link"].toString()
-    ]);
-    saveSonDakika.last.insertAll(saveSonDakika.last.length,
-        await gpt.tagger(title: element['title'].toString()));
+  if (sonDakika.isNotEmpty) {
+    for (var element in sonDakika) {
+      saveSonDakika.add([
+        '',
+        element["time"].toString(),
+        element["title"].toString(),
+        element["link"].toString()
+      ]);
+      saveSonDakika.last.insertAll(saveSonDakika.last.length,
+          await gpt.tagger(title: element['title'].toString()));
+    }
   }
   if (saveSonDakika.isNotEmpty) {
     saveSonDakika.first.first = DateTime.now().toIso8601String();
