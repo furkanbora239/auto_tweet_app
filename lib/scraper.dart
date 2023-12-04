@@ -67,7 +67,7 @@ class T24 {
         content += element.text;
         content += '\n';
       }
-      final media = html.querySelectorAll('div._2hwRY > img');
+      final media = html.querySelectorAll('img._3xXvK');
       for (var element in media) {
         mediaLinks.add(element.attributes['src']);
       }
