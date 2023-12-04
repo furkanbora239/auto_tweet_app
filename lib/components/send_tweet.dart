@@ -25,3 +25,19 @@ window.onload = setTimeout(function() {
     return SafeArea(child: WebViewWidget(controller: controller));
   }
 }
+
+void sendTweet({required String tweetText, required BuildContext context}) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      Future.delayed(const Duration(seconds: 20), () {
+        Navigator.pop(context);
+      });
+      return SendTweet(
+          url: Uri.parse(
+              '''https://twitter.com/compose/tweet?&text=$tweetText'''));
+    },
+  );
+}
+
+/* Merhaba %23dünya bununla beraber tweet ortasında hashtag meselesini çözmüş oldum. */

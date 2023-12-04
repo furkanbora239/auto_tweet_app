@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:auto_tweet/components/save_new_news.dart';
 import 'package:auto_tweet/components/send_tweet.dart';
 import 'package:auto_tweet/gdocs.dart';
 import 'package:auto_tweet/scraper.dart';
@@ -16,64 +19,57 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ColoredBox(
-      color: Colors.black,
-      child: Center(
-        child: FilledButton(
-            style: const ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(Colors.indigo)),
-            onPressed: () {
-              /* showDialog(
-                context: context,
-                builder: (context) {
-                  Future.delayed(const Duration(seconds: 20), () {
-                    Navigator.pop(context);
-                  });
-                  return SendTweet(
-                      url: Uri.parse(
-                          '''https://twitter.com/compose/tweet?&text=Merhaba %23dünya bununla beraber tweet ortasında hashtag meselesini çözmüş oldum.'''));
-                },
-              ); */
-              saveNewNews();
-            },
-            child: const Text(
-              'send tweet',
-              style: TextStyle(color: Colors.brown),
-            )),
-      ),
-    );
+    TweetSystem().auto(context: context);
+    return const ColoredBox(color: Colors.black);
   }
 }
 
-void saveNewNews() async {
-  var sonDakika = await T24().sonDakika();
-  var lastTenNews = await GSheetsApi().getLestTenNewsT24();
-  comparison:
-  for (int i = 0; i < lastTenNews.length; i++) {
-    for (int s = 0; s < sonDakika.length; s++) {
-      if (lastTenNews[i][2] == sonDakika[s]['title']) {
-        sonDakika.removeRange(s, sonDakika.length);
-        break comparison;
+class TweetSystem {
+  int minSecont = 915;
+  bool unWanted(List element, {required String tagName}) {
+    return !element.contains(tagName);
+  }
+
+  void auto({required BuildContext context}) async {
+    while (true) {
+      int nextJopTime = minSecont + Random().nextInt(360);
+      List<List>? savedNewNews = await saveNewNews();
+      savedNewNews?.removeWhere((element) =>
+          element.contains('gereksiz') ||
+          element.contains('magazin') ||
+          element.contains('sanat'));
+      if (savedNewNews != null && savedNewNews.isNotEmpty) {
+        for (var row in savedNewNews) {
+          Map newsDetail = await getAndSaveT24NewsDetail(row: row);
+          String tweet = await gpt.makeTweet(
+              text:
+                  '''başlık: ${newsDetail['title']}, altbaşlık: ${newsDetail['subtitle']}, metin: ${newsDetail['content']}, media linkleri: ${newsDetail['media links']}, t24 kategorisi: ${newsDetail['t24 category']}''');
+          sendTweet(tweetText: tweet, context: context);
+
+          await Future.delayed(
+              Duration(seconds: (nextJopTime / savedNewNews.length).round()));
+        }
       }
     }
   }
-  List<List<dynamic>> saveSonDakika = [];
-  if (sonDakika.isNotEmpty) {
-    for (var element in sonDakika) {
-      saveSonDakika.add([
-        '',
-        element["time"].toString(),
-        element["title"].toString(),
-        element["link"].toString()
-      ]);
-      saveSonDakika.last.insertAll(saveSonDakika.last.length,
-          await gpt.tagger(title: element['title'].toString()));
-    }
-  }
-  if (saveSonDakika.isNotEmpty) {
-    saveSonDakika.first.first = DateTime.now().toIso8601String();
-    GSheetsApi().write(
-        worksheet: GSheetsApi.t24SonDakikaWorkSheet,
-        data: saveSonDakika.reversed.toList());
-  }
+}
+
+Future<Map<String, Object?>> getAndSaveT24NewsDetail(
+    {required List<dynamic> row}) async {
+  Uri url = Uri.parse(row[3]);
+  Map<String, Object?> newsDetail = await T24().haberDetay(link: url);
+  List<String> newsDetailList = [
+    newsDetail['title'].toString(),
+    newsDetail['subtitle'].toString(),
+    newsDetail['date'].toString(),
+    newsDetail['content'].toString(),
+    newsDetail['media links'].toString(),
+    newsDetail['t24 category'].toString(),
+    (row.getRange(4, row.length - 1).join(" ")),
+    'şimdilik boş'
+  ];
+
+  GSheetsApi().write(
+      worksheet: GSheetsApi.t24NewsDetailWorkSheet, data: [newsDetailList]);
+  return newsDetail;
 }
