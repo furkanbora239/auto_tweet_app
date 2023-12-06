@@ -1,3 +1,4 @@
+import 'package:auto_tweet/for_automation.dart';
 import 'package:auto_tweet/gdocs.dart';
 import 'package:auto_tweet/tweet_system.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TweetSystem().auto(context: context);
+    /* TweetSystem().auto(context: context); */
+    saveNewNewsDetails();
     return const ColoredBox(color: Colors.black);
   }
 }

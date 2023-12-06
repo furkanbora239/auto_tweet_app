@@ -40,6 +40,7 @@ class GSheetsApi {
     final Worksheet worksheet =
         await GSheetsApi().getWorkSheet(workSheetName: 'T24 Detailed News');
     worksheet.values.insertRow(1, [
+      'link',
       'title',
       'subtitle',
       'date',

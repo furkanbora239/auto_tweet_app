@@ -73,6 +73,9 @@ class T24 {
       }
     } else if (croppedLink.startsWith('foto-haber')) {
       t24Category = 'foto-haber';
+      /* bu bölümün ana konusu görseller olmasına rağmen görselleri çekemiyoruz.
+      js çalışması gerekiyor istersen daha sonra bunu web view kullanarak yapabilirisn
+      şimdilik çalışmıyor olarak idare atmen gerekecek */
 
       title =
           html.querySelector('div._1YxhA > div._1C396 > div._1VAN- > h1')!.text;

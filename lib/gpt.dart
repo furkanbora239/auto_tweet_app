@@ -33,7 +33,7 @@ Future _tagger({required String title}) async {
                 'Bearer ${secret.bearerToken}' //use your bearer token
           },
           body: jsonEncode({
-            "model": "ft:gpt-3.5-turbo-1106:personal::8QERatUe",
+            "model": "ft:gpt-3.5-turbo-1106:personal::8RtJNIHf",
             "messages": [
               {"role": "system", "content": 'tagger'},
               {"role": "user", "content": title}
@@ -46,8 +46,7 @@ Future _tagger({required String title}) async {
 
 Future<List<String>> tagger({required String title}) async {
   List<String> tags = [];
-  var gptObject = await _tagger(title: title.toString());
-  String gptTag = gptObject['choices'][0]['message']['content'];
+  String gptTag = await _tagger(title: title.toString());
   if (gptTag.contains(' ')) {
     tags = gptTag.split(' ');
   } else {
