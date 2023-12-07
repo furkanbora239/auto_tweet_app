@@ -1,8 +1,9 @@
 import 'dart:math';
-import 'package:auto_tweet/components/get_and_save_t24_news_detail.dart';
 import 'package:auto_tweet/components/save_new_news.dart';
 import 'package:auto_tweet/components/send_tweet.dart';
+import 'package:auto_tweet/gdocs.dart';
 import 'package:auto_tweet/gpt.dart' as gpt;
+import 'package:auto_tweet/scraper.dart';
 import 'package:flutter/material.dart';
 
 class TweetSystem {
@@ -11,22 +12,33 @@ class TweetSystem {
   void auto({required BuildContext context}) async {
     while (true) {
       int nextJopTime = minSecont + Random().nextInt(360);
-      List<List>? savedNewNews = await saveNewNews();
-      savedNewNews?.removeWhere((element) =>
-          element.contains('gereksiz') ||
-          element.contains('magazin') ||
-          element.contains('sanat'));
-      if (savedNewNews != null && savedNewNews.isNotEmpty) {
-        for (var row in savedNewNews) {
-          Map newsDetail = await getAndSaveT24NewsDetail(row: row);
-          String tweet = await gpt.makeTweet(
-              text:
-                  '''başlık: ${newsDetail['title']}, altbaşlık: ${newsDetail['subtitle']}, metin: ${newsDetail['content']}, media linkleri: ${newsDetail['media links']}, t24 kategorisi: ${newsDetail['t24 category']}''');
-          sendTweet(tweetText: tweet, context: context);
 
+      final List<List<dynamic>>? lastSavedNews = await saveNewNews();
+      final List<List<dynamic>>? flitteredNews =
+          TweetSystem().flitterNews(news: lastSavedNews);
+      List<List<String>> saveNewsDetail = [];
+      if (flitteredNews != null && flitteredNews.isNotEmpty) {
+        for (var element in flitteredNews) {
+          final Map<String, Object?> newDetails =
+              await T24().haberDetay(link: Uri.parse(element[3]));
+          saveNewsDetail.add([
+            element[3].toString(),
+            newDetails['title'].toString(),
+            newDetails['subtitle'].toString(),
+            newDetails['date'].toString(),
+            newDetails['content'].toString(),
+            newDetails['media links'].toString(),
+            newDetails['T24Category'].toString(),
+            (element.getRange(4, element.length).join(" ")),
+            'şimdilik boş'
+          ]);
           await Future.delayed(
-              Duration(seconds: (nextJopTime / savedNewNews.length).round()));
+              Duration(seconds: (nextJopTime / flitteredNews.length).round()));
         }
+        GSheetsApi().write(
+            worksheet: GSheetsApi.t24NewsDetailWorkSheet, data: saveNewsDetail);
+      } else {
+        await Future.delayed(Duration(seconds: nextJopTime));
       }
     }
   }
@@ -37,5 +49,31 @@ class TweetSystem {
         element.contains('magazin') ||
         element.contains('sanat'));
     return news;
+  }
+}
+
+void getNewNewsAndSaveDetails() async {
+  final List<List<dynamic>>? lastSavedNews = await saveNewNews();
+  final List<List<dynamic>>? flitteredNews =
+      TweetSystem().flitterNews(news: lastSavedNews);
+  List<List<String>> saveNewsDetail = [];
+  if (flitteredNews != null && flitteredNews.isNotEmpty) {
+    for (var element in flitteredNews) {
+      final Map<String, Object?> newDetails =
+          await T24().haberDetay(link: Uri.parse(element[3]));
+      saveNewsDetail.add([
+        element[3].toString(),
+        newDetails['title'].toString(),
+        newDetails['subtitle'].toString(),
+        newDetails['date'].toString(),
+        newDetails['content'].toString(),
+        newDetails['media links'].toString(),
+        newDetails['T24Category'].toString(),
+        (element.getRange(4, element.length).join(" ")),
+        'şimdilik boş'
+      ]);
+    }
+    GSheetsApi().write(
+        worksheet: GSheetsApi.t24NewsDetailWorkSheet, data: saveNewsDetail);
   }
 }

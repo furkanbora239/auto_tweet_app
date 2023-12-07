@@ -10,7 +10,6 @@ class GSheetsApi {
 
   Future<String> init() async {
     try {
-      tweetedWorkSheet = await getTweetedWorkSheet();
       t24NewsDetailWorkSheet = await getT24NewsDetailWorkSheet();
       t24SonDakikaWorkSheet = await getT24SonDakikaWorkSheet();
 
@@ -18,15 +17,6 @@ class GSheetsApi {
     } catch (e) {
       return 'error:$e';
     }
-  }
-
-  Future<Worksheet> getTweetedWorkSheet() async {
-    final Worksheet worksheet =
-        await GSheetsApi().getWorkSheet(workSheetName: 'tweeted');
-    worksheet.values.insertRow(1, [
-      'tweet id' // Şuan için api geri ne dönecek bilmiyorum geleceğe hazırlık olması için ekledim öğrendiğinde buraya ekle TODO!
-    ]);
-    return worksheet;
   }
 
   Future<Worksheet> getT24SonDakikaWorkSheet() async {
