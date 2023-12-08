@@ -46,6 +46,7 @@ class TweetSystem {
   List<List>? flitterNews({required List<List<dynamic>>? news}) {
     news?.removeWhere((element) =>
         element.contains('gereksiz') ||
+        element.contains('gezi') ||
         element.contains('magazin') ||
         element.contains('sanat'));
     return news;

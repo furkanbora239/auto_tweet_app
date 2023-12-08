@@ -1,10 +1,8 @@
 import 'dart:io';
 import 'dart:convert';
-
 import 'package:auto_tweet/gdocs.dart';
 
 main() async {
-  await GSheetsApi().init();
   forTweetGptJson();
 }
 
@@ -29,11 +27,12 @@ void forTaggerJson() async {
 }
 
 void forTweetGptJson() async {
+  await GSheetsApi().init();
   File fileForWrite = File('tweet.jsonl');
   IOSink sink = fileForWrite.openWrite();
   List forWrite = [];
   List<List<String>> newsDetails =
-      await GSheetsApi.t24NewsDetailWorkSheet.values.allRows();
+      await GSheetsApi.t24NewsDetailWorkSheet.values.allRows(fromRow: 2);
   for (var element in newsDetails) {
     var row = {
       "messages": [
@@ -41,7 +40,7 @@ void forTweetGptJson() async {
         {
           "role": "user",
           "content":
-              "başlık: ${element[1]}, alt başlık: ${element[2]}, içerik: ${element[4]}, media links: ${element[5]}, t24 kategri: ${element[6]}, tags: ${element[7]} "
+              "başlık: ${element[1]}, alt başlık: ${element[2]}, içerik: ${element[4]}, media links: ${element[5]}, t24 kategri: ${element[6]}, tags: ${element[7]}"
         },
         {"role": "assistant", "content": ""}
       ]
