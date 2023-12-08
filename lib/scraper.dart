@@ -41,8 +41,7 @@ class T24 {
           html.querySelector("div.col-md-8.col-xs-12 > div._3mmXU > h1")!.text;
       mediaLinks.add(link
           .toString()); // twitter automatically finds the video. so it is enough to use the link to the web page
-      if (title ==
-          "Türkiye ve dünya gündeminde neler oldu? İşte Bir Bakışta Bugün") {
+      if (title.contains("Türkiye ve dünya gündeminde neler oldu?")) {
         final contentData = html
             .querySelectorAll(
                 "div._3mmXU > div._1NMxy > div > ul > li > strong")
