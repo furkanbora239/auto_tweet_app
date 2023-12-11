@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:gsheets/gsheets.dart';
 import 'package:auto_tweet/secret.dart' as secret; // use yours
 
@@ -15,6 +17,7 @@ class GSheetsApi {
 
       return 'done';
     } catch (e) {
+      log("$e", name: "GSheet().init:", time: DateTime.now());
       return 'error:$e';
     }
   }

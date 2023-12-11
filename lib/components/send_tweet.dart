@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class SendTweet extends StatelessWidget {
-  const SendTweet({super.key, required this.url});
+class _SendTweet extends StatelessWidget {
+  const _SendTweet({super.key, required this.url});
   final Uri url;
 
   @override
@@ -30,12 +30,12 @@ void sendTweet({required String tweetText, required BuildContext context}) {
   showDialog(
     context: context,
     builder: (context) {
-      Future.delayed(const Duration(seconds: 20), () {
+      Future.delayed(const Duration(seconds: 30), () {
         Navigator.pop(context);
       });
-      return SendTweet(
+      return _SendTweet(
           url: Uri.parse(
-              '''https://twitter.com/compose/tweet?&text=$tweetText'''));
+              '''https://twitter.com/compose/tweet?&text=${Uri.encodeQueryComponent(tweetText)}'''));
     },
   );
 }

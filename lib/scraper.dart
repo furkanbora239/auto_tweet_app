@@ -1,21 +1,32 @@
 import 'dart:convert';
+import 'package:auto_tweet/update_widget.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/dom.dart';
 
 class T24 {
   Future<List<Map<String, Object>>> sonDakika() async {
+    StringStream().addString('son dakika haberlerini alıyorum...');
+
     List<Map<String, Object>> breakingNews = [];
     final http.Response response =
         await http.get(Uri.parse('https://t24.com.tr/son-dakika'));
     final Document html = Document.html(utf8.decode(response.bodyBytes));
     final List<Element> haberData =
         html.querySelectorAll('div._1N_iq > div > div._1qLBI').toList();
+    StringStream()
+        .addString('${haberData.length} adet son dakika haberi bulundu');
+    int i = 0;
+    StringStream().addString(
+        'son dakika haberleri listeye ekleniyor $i/${haberData.length}');
     for (var element in haberData) {
       final String time = element.querySelector(' a > p.jo5wf')!.text;
       final String title = element.querySelector("a > h3.u2F6W")!.text;
       final Uri link = Uri.parse(
           "https://t24.com.tr${element.querySelector('a')!.attributes['href']}");
       breakingNews.add({"time": time, "title": title, "link": link});
+      i++;
+      StringStream().clearLastAddNewString(
+          'son dakika haberleri listeye ekleniyor $i/${haberData.length}');
     }
     return breakingNews;
   }

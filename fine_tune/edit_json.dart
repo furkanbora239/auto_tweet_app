@@ -33,6 +33,7 @@ void forTweetGptJson() async {
   List forWrite = [];
   List<List<String>> newsDetails =
       await GSheetsApi.t24NewsDetailWorkSheet.values.allRows(fromRow: 2);
+  newsDetails.removeWhere((element) => element.length < 10);
   for (var element in newsDetails) {
     var row = {
       "messages": [
@@ -42,7 +43,7 @@ void forTweetGptJson() async {
           "content":
               "başlık: ${element[1]}, alt başlık: ${element[2]}, içerik: ${element[4]}, media links: ${element[5]}, t24 kategri: ${element[6]}, tags: ${element[7]}"
         },
-        {"role": "assistant", "content": ""}
+        {"role": "assistant", "content": element[9]}
       ]
     };
     forWrite.add(jsonEncode(row));

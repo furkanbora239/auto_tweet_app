@@ -13,9 +13,9 @@ Future makeTweet({required String text}) async {
                 'Bearer ${secret.bearerToken}' //use your bearer token
           },
           body: jsonEncode({
-            "model": "gpt-3.5-turbo",
+            "model": "ft:gpt-3.5-turbo-1106:personal::8UJCmANx",
             "messages": [
-              {"role": "system", "content": 'Summary'},
+              {"role": "system", "content": 'tweet'},
               {"role": "user", "content": text}
             ],
             "temperature": 0.5
