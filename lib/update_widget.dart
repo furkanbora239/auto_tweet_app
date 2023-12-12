@@ -1,29 +1,30 @@
-import 'dart:async';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
-class StringStream {
-  final List<String> console = ["application Start"];
-  final StreamController<List<String>> _stateStreamController =
-      StreamController<List<String>>();
-  StreamSink<List<String>> get eventSink => _stateStreamController.sink;
-  Stream<List<String>> get eventStream => _stateStreamController.stream;
+class Terminal {
+  static final ValueNotifier<List<String>> console =
+      ValueNotifier<List<String>>(["application Start"]);
 
-  void addString(String value) {
-    console.add(value);
-    eventSink.add(console);
+  void addString({required String text}) {
+    List<String> list = console.value.toList();
+    list.add(text);
+    console.value = list.toList();
   }
 
-  void clearConsole() {
-    console.clear();
-    eventSink.add(console);
+  void clear() {
+    console.value = [];
   }
 
-  void clearLastOne() {
-    console.removeLast();
-    eventSink.add(console);
+  void removeLast() {
+    List<String> list = console.value.toList();
+    list.removeLast();
+    console.value = list.toList();
   }
 
-  void clearLastAddNewString(String value) {
-    console.removeLast();
-    addString(value);
+  void changeLast({required String text}) {
+    List<String> list = console.value.toList();
+    list.removeLast();
+    list.add(text);
+    console.value = list.toList();
   }
 }

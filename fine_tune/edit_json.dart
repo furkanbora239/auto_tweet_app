@@ -15,7 +15,6 @@ void forTaggerJson() async {
   List forWrite = [];
   for (var i = 0; i < jsonLines.length; i++) {
     Map jsonFile = jsonDecode(jsonLines[i].trim());
-    print(jsonFile);
     String content = jsonFile['messages'][2]['content'];
     jsonFile['messages'][2]['content'] = content.trim();
     forWrite.add(jsonEncode(jsonFile));

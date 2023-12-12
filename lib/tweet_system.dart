@@ -11,20 +11,24 @@ class TweetSystem {
   int minSecont = 915;
 
   void auto({required BuildContext context}) async {
-    StringStream().addString('waiting for gSheet init');
+    Terminal().addString(text: "tweet auto is start");
     while (await GSheetsApi().init() != 'done') {
       await Future.delayed(const Duration(minutes: 5));
     }
-    StringStream().addString('GSheet init is done');
+    Terminal().addString(text: "GSheetApi.init is done");
+
     while (true) {
       int nextJopTime = minSecont + Random().nextInt(360);
-      StringStream().addString('Next jop time is $nextJopTime');
+      Terminal().addString(text: "next jop time: $nextJopTime");
 
       final List<List<dynamic>>? lastSavedNews = await saveNewNews();
       final List<List<dynamic>>? flitteredNews =
           TweetSystem().flitterNews(news: lastSavedNews);
       List<List<String>> saveNewsDetail = [];
+      Terminal()
+          .addString(text: "flittered news ${flitteredNews?.length ?? 0}");
       if (flitteredNews != null && flitteredNews.isNotEmpty) {
+        Terminal().addString(text: "tweet making is start");
         for (var element in flitteredNews) {
           final Map<String, Object?> newDetails =
               await T24().haberDetay(link: Uri.parse(element[3]));
@@ -45,12 +49,22 @@ class TweetSystem {
             'şimdilik boş',
             tweet
           ]);
+          Terminal().addString(text: "Tweet sended");
+          Terminal().addString(
+              text:
+                  "${flitteredNews.length}/${saveNewsDetail.length} tweet is done. \nnext tweet in ${(nextJopTime / flitteredNews.length).round()} min");
           await Future.delayed(
               Duration(seconds: (nextJopTime / flitteredNews.length).round()));
         }
+        Terminal().addString(text: "tweet loop is done");
         GSheetsApi().write(
             worksheet: GSheetsApi.t24NewsDetailWorkSheet, data: saveNewsDetail);
+        Terminal()
+            .addString(text: "all details is saved to gsheet news details");
       } else {
+        Terminal().addString(
+            text:
+                "can't find any hot news waiting for next loop\nnext loop in ${nextJopTime}s");
         await Future.delayed(Duration(seconds: nextJopTime));
       }
     }

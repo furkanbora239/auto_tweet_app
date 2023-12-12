@@ -5,30 +5,45 @@ import 'package:html/dom.dart';
 
 class T24 {
   Future<List<Map<String, Object>>> sonDakika() async {
-    StringStream().addString('son dakika haberlerini alıyorum...');
-
+    Terminal().addString(text: "geting hot news from t24");
     List<Map<String, Object>> breakingNews = [];
     final http.Response response =
-        await http.get(Uri.parse('https://t24.com.tr/son-dakika'));
+        await _getWebSite(url: Uri.parse('https://t24.com.tr/son-dakika'));
     final Document html = Document.html(utf8.decode(response.bodyBytes));
     final List<Element> haberData =
         html.querySelectorAll('div._1N_iq > div > div._1qLBI').toList();
-    StringStream()
-        .addString('${haberData.length} adet son dakika haberi bulundu');
-    int i = 0;
-    StringStream().addString(
-        'son dakika haberleri listeye ekleniyor $i/${haberData.length}');
     for (var element in haberData) {
       final String time = element.querySelector(' a > p.jo5wf')!.text;
       final String title = element.querySelector("a > h3.u2F6W")!.text;
       final Uri link = Uri.parse(
           "https://t24.com.tr${element.querySelector('a')!.attributes['href']}");
       breakingNews.add({"time": time, "title": title, "link": link});
-      i++;
-      StringStream().clearLastAddNewString(
-          'son dakika haberleri listeye ekleniyor $i/${haberData.length}');
     }
     return breakingNews;
+  }
+
+  Future<http.Response> _getWebSite({required Uri url}) async {
+    bool done = false;
+    late http.Response response;
+    while (!done) {
+      try {
+        response = await http.get(url);
+        if (response.statusCode == 200) {
+          done = true;
+          Terminal().addString(text: "get website is done");
+        } else {
+          Terminal().addString(
+              text:
+                  "get error status code: ${response.statusCode} \n detail: \n${response.body}\n retry in 5 min.");
+          await Future.delayed(const Duration(minutes: 5));
+        }
+      } catch (e) {
+        Terminal().addString(
+            text: "get web site error. error code: \n $e \n retry in 5 min.");
+        await Future.delayed(const Duration(minutes: 5));
+      }
+    }
+    return response;
   }
 
   Future<Map<String, Object?>> haberDetay({required Uri link}) async {
