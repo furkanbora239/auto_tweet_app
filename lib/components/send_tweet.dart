@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class _SendTweet extends StatelessWidget {
-  const _SendTweet({super.key, required this.url});
+  const _SendTweet({required this.url});
   final Uri url;
 
   @override
@@ -11,15 +11,12 @@ class _SendTweet extends StatelessWidget {
       ..setJavaScriptMode(JavaScriptMode.unrestricted);
     controller.loadRequest(url);
     controller.setNavigationDelegate(NavigationDelegate(
-      onProgress: (progress) {
-        print(progress);
-      },
       onPageFinished: (url) async {
         controller.runJavaScript('''
 window.onload = setTimeout(function() {
   document.querySelector("[data-testid='tweetButton']").click();
   
-}, 2000);''');
+}, 4000);''');
       },
     ));
     return SafeArea(child: WebViewWidget(controller: controller));
