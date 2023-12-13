@@ -23,6 +23,10 @@ window.onload = setTimeout(function() {
   }
 }
 
+Widget loginTwitter() {
+  return _SendTweet(url: Uri.parse("https://twitter.com/"));
+}
+
 void sendTweet({required String tweetText, required BuildContext context}) {
   showDialog(
     context: context,

@@ -8,7 +8,7 @@ class Terminal {
   void addString({required String text}) {
     List<String> list = console.value.toList();
     list.add(text);
-    console.value = list.toList();
+    console.value = optimizeList(list);
   }
 
   void clear() {
@@ -18,13 +18,20 @@ class Terminal {
   void removeLast() {
     List<String> list = console.value.toList();
     list.removeLast();
-    console.value = list.toList();
+    console.value = optimizeList(list);
   }
 
   void changeLast({required String text}) {
     List<String> list = console.value.toList();
     list.removeLast();
     list.add(text);
-    console.value = list.toList();
+    console.value = optimizeList(list);
+  }
+
+  List<String> optimizeList(List<String> list) {
+    if (list.length > 700) {
+      list.removeRange(0, list.length - 699);
+    }
+    return list.toList();
   }
 }

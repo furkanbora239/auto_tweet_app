@@ -1,3 +1,4 @@
+import 'package:auto_tweet/components/send_tweet.dart';
 import 'package:auto_tweet/tweet_system.dart';
 import 'package:auto_tweet/update_widget.dart';
 import 'package:flutter/gestures.dart';
@@ -9,8 +10,6 @@ void main() async {
   ));
 }
 
-int test = 0;
-
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -18,6 +17,16 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     TweetSystem().auto(context: context);
     return Scaffold(
+      floatingActionButton: FloatingActionButton.small(
+        backgroundColor: Colors.brown[700],
+        onPressed: () {
+          showDialog(context: context, builder: (context) => loginTwitter());
+        },
+        child: Icon(
+          Icons.person,
+          color: Colors.red[800],
+        ),
+      ),
       backgroundColor: Colors.black,
       body: SafeArea(
           child: ValueListenableBuilder(
