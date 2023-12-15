@@ -27,7 +27,7 @@ void forTaggerJson() async {
 
 void forTweetGptJson() async {
   await GSheetsApi().init();
-  File fileForWrite = File('tweet.jsonl');
+  File fileForWrite = File('tweet0001.jsonl');
   IOSink sink = fileForWrite.openWrite();
   List forWrite = [];
   List<List<String>> newsDetails =

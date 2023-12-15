@@ -6,8 +6,9 @@ class Terminal {
       ValueNotifier<List<String>>(["application Start"]);
 
   void addString({required String text}) {
+    final time = DateTime.now();
     List<String> list = console.value.toList();
-    list.add(text);
+    list.add("${time.hour}:${time.minute} $text");
     console.value = optimizeList(list);
   }
 
@@ -22,9 +23,10 @@ class Terminal {
   }
 
   void changeLast({required String text}) {
+    final time = DateTime.now();
     List<String> list = console.value.toList();
     list.removeLast();
-    list.add(text);
+    list.add("${time.hour}:${time.minute} $text");
     console.value = optimizeList(list);
   }
 

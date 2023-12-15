@@ -10,7 +10,7 @@ Future<List<List>?> saveNewNews() async {
   comparison:
   for (int i = 0; i < lastTenNews.length; i++) {
     for (int s = 0; s < sonDakika.length; s++) {
-      if (lastTenNews[i][2] == sonDakika[s]['title']) {
+      if (lastTenNews[i][3].toString() == sonDakika[s]['link'].toString()) {
         sonDakika.removeRange(s, sonDakika.length);
         break comparison;
       }

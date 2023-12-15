@@ -13,7 +13,7 @@ Future makeTweet({required String text}) async {
                 'Bearer ${secret.bearerToken}' //use your bearer token
           },
           body: jsonEncode({
-            "model": "ft:gpt-3.5-turbo-1106:personal::8UJCmANx",
+            "model": "ft:gpt-3.5-turbo-1106:personal::8Vt8L8jl",
             "messages": [
               {"role": "system", "content": 'tweet'},
               {"role": "user", "content": text}
