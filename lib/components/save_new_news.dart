@@ -5,6 +5,12 @@ import 'package:auto_tweet/update_widget.dart';
 
 Future<List<List>?> saveNewNews() async {
   Terminal().addString(text: "save new news is start");
+  try {
+    await GSheetsApi().init();
+  } catch (e) {
+    Terminal().addString(
+        text: "Not so important, GSheetsApi().init(); fail with code:\n$e");
+  }
   var sonDakika = await T24().sonDakika();
   var lastTenNews = await GSheetsApi().getLestTenNewsT24();
   comparison:
