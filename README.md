@@ -1,6 +1,6 @@
 # AutoTweet: AI-Powered News Automation & Publisher
 
-**AutoTweet** is a fully automated mobile tool designed to scrape breaking news, process the content using fine-tuned AI models, and publish tweets via a headless WebView mechanism. This project serves as a bridge between traditional news sources and social media, eliminating the need for expensive official APIs.
+**AutoTweet** is a fully automated mobile tool designed to scrape breaking news, process the content using fine-tuned AI models, and publish tweets via WebView mechanism. This project serves as a bridge between traditional news sources and social media, eliminating the need for expensive official APIs.
 
 ## 🚀 Key Features
 
